@@ -1,18 +1,19 @@
 #!/usr/bin/env python
+from _helpers.helpers import join_to_tbls
 
 print("# join-pandas.py", flush=True)
 
 import os
 import gc
 import timeit
-import pandas as pd
+import terality as pd
 
 exec(open("./_helpers/helpers.py").read())
 
 ver = pd.__version__
-git = pd.__git_version__
+git = "unset"
 task = "join"
-solution = "pandas"
+solution = "terality"
 fun = ".merge"
 cache = "TRUE"
 on_disk = "FALSE"
@@ -27,31 +28,36 @@ if len(src_jn_y) != 3:
 print("loading datasets " + data_name + ", " + y_data_name[0] + ", " + y_data_name[1] + ", " + y_data_name[2], flush=True)
 
 from datatable import fread # for loading data only, see #47
-x = fread(src_jn_x, na_strings=['']).to_pandas()
+print("start fread")
+df = fread(src_jn_x, na_strings=['']).to_pandas()
+print(df.memory_usage(deep=True))
+print("start converting to terality")
+x = pd.DataFrame.from_pandas(df)
+print("done")
 x['id1'] = x['id1'].astype('Int32')
 x['id2'] = x['id2'].astype('Int32')
 x['id3'] = x['id3'].astype('Int32')
-x['id4'] = x['id4'].astype('category') # remove after datatable#1691
-x['id5'] = x['id5'].astype('category')
-x['id6'] = x['id6'].astype('category')
+#x['id4'] = x['id4'].astype('category') # remove after datatable#1691
+#x['id5'] = x['id5'].astype('category')
+#x['id6'] = x['id6'].astype('category')
 x['v1'] = x['v1'].astype('float64')
-small = fread(src_jn_y[0], na_strings=['']).to_pandas()
+small = pd.DataFrame.from_pandas(fread(src_jn_y[0], na_strings=['']).to_pandas())
 small['id1'] = small['id1'].astype('Int32')
-small['id4'] = small['id4'].astype('category')
+#small['id4'] = small['id4'].astype('category')
 small['v2'] = small['v2'].astype('float64')
-medium = fread(src_jn_y[1], na_strings=['']).to_pandas()
+medium = pd.DataFrame.from_pandas(fread(src_jn_y[1], na_strings=['']).to_pandas())
 medium['id1'] = medium['id1'].astype('Int32')
 medium['id2'] = medium['id2'].astype('Int32')
-medium['id4'] = medium['id4'].astype('category')
-medium['id5'] = medium['id5'].astype('category')
+#medium['id4'] = medium['id4'].astype('category')
+#medium['id5'] = medium['id5'].astype('category')
 medium['v2'] = medium['v2'].astype('float64')
-big = fread(src_jn_y[2], na_strings=['']).to_pandas()
+big = pd.DataFrame.from_pandas(fread(src_jn_y[2], na_strings=['']).to_pandas())
 big['id1'] = big['id1'].astype('Int32')
 big['id2'] = big['id2'].astype('Int32')
 big['id3'] = big['id3'].astype('Int32')
-big['id4'] = big['id4'].astype('category')
-big['id5'] = big['id5'].astype('category')
-big['id6'] = big['id6'].astype('category')
+#big['id4'] = big['id4'].astype('category')
+#big['id5'] = big['id5'].astype('category')
+#big['id6'] = big['id6'].astype('category')
 big['v2'] = big['v2'].astype('float64')
 print(len(x.index), flush=True)
 print(len(small.index), flush=True)
@@ -62,6 +68,7 @@ task_init = timeit.default_timer()
 print("joining...", flush=True)
 
 question = "small inner on int" # q1
+print(question, flush=True)
 gc.collect()
 t_start = timeit.default_timer()
 ans = x.merge(small, on='id1')
@@ -88,6 +95,7 @@ print(ans.tail(3), flush=True)
 del ans
 
 question = "medium inner on int" # q2
+print(question, flush=True)
 gc.collect()
 t_start = timeit.default_timer()
 ans = x.merge(medium, on='id2')
@@ -114,6 +122,7 @@ print(ans.tail(3), flush=True)
 del ans
 
 question = "medium outer on int" # q3
+print(question, flush=True)
 gc.collect()
 t_start = timeit.default_timer()
 ans = x.merge(medium, how='left', on='id2')
@@ -140,6 +149,7 @@ print(ans.tail(3), flush=True)
 del ans
 
 question = "medium inner on factor" # q4
+print(question, flush=True)
 gc.collect()
 t_start = timeit.default_timer()
 ans = x.merge(medium, on='id5')
@@ -166,6 +176,7 @@ print(ans.tail(3), flush=True)
 del ans
 
 question = "big inner on int" # q5
+print(question, flush=True)
 gc.collect()
 t_start = timeit.default_timer()
 ans = x.merge(big, on='id3')

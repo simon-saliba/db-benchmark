@@ -8,6 +8,9 @@ dplyr,groupby2014
 pandas,groupby
 pandas,join
 pandas,groupby2014
+terality,groupby
+terality,join
+terality,groupby2014
 pydatatable,groupby
 pydatatable,join
 spark,groupby
@@ -24,5 +27,3 @@ polars,groupby
 polars,join
 arrow,groupby
 arrow,join
-duckdb,groupby
-duckdb,join

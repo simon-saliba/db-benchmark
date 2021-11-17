@@ -14,8 +14,8 @@ readret = function(x) {
 file.ext = function(x) {
   ans = switch(
     x,
-    "data.table"=, "dplyr"=, "h2o"=, "arrow"=, "duckdb"="R", 
-    "pandas"=, "cudf"=, "spark"=, "pydatatable"=, "modin"=, "dask"=, "polars"="py",
+    "data.table"=, "dplyr"=, "h2o"=, "arrow"="R",
+    "terality"=, "pandas"=, "cudf"=, "spark"=, "pydatatable"=, "modin"=, "dask"=, "polars"="py",
     "clickhouse"="sql",
     "juliadf"="jl"
   )
@@ -179,7 +179,6 @@ launch = function(dt, mockup, out_dir="out") {
       for (d in data) { # d = data[1]
         is.stop() # interrupt using 'stop' file #74
         is.pause() # pause using 'pause' file #143
-        is.stop()
         this_run = dt[.(s, t, d), on=c("solution","task","data")]
         if (nrow(this_run) != 1L)
           stop(sprintf("single run for %s-%s-%s has %s entries while it must have exactly one", s, t, d, nrow(this_run)))

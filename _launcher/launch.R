@@ -3,6 +3,9 @@ if (!packageVersion("data.table") >= "1.13.0")
   stop("db-benchmark launcher script depends on recent data.table features, install at least 1.13.0.")
 source("./_launcher/launcher.R")
 
+is.stop()
+is.pause()
+
 .nodename = Sys.info()[["nodename"]]
 mockup = as.logical(Sys.getenv("MOCKUP", "false"))
 
@@ -34,6 +37,7 @@ if (any(is.na(timeout$minutes))) stop("missing entries in ./_control/timeout.csv
 solution = fread("./_control/solutions.csv")
 solution[run_solutions, on="solution", nomatch=NA # filter for env var RUN_SOLUTIONS
          ] -> solution
+print(solution)
 if (any(is.na(solution$task))) stop("missing entries in ./_control/solutions.csv for some solutions")
 
 # what to run, log machine name, lookup timeout
@@ -49,10 +53,6 @@ lookup_run_batch(dt)
 
 # print list of solutions that are going to be run in this batch so we know upfront which will be skipped
 cat("Benchmark solutions to run: ", dt[is.na(run_batch), paste(unique(solution),collapse=", ")], "\n", sep="")
-
-is.stop()
-is.pause()
-is.stop()
 
 # launch script, if not mockup, if not already run, unless forcerun
 launch(dt, mockup=mockup)

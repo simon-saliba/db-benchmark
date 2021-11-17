@@ -110,8 +110,8 @@ if ("quiet" %in% names(args)) {
 file.ext = function(x) {
   ans = switch(
     x,
-    "data.table"=, "dplyr"=, "h2o"=, "arrow"=, "duckdb"="R",
-    "pandas"=, "cudf"=, "spark"=, "pydatatable"=, "modin"=, "dask"=, "polars"="py",
+    "data.table"=, "dplyr"=, "h2o"=, "arrow"="R",
+    "terality"=, "pandas"=, "cudf"=, "spark"=, "pydatatable"=, "modin"=, "dask"=, "polars"="py",
     "clickhouse"="sql",
     "juliadf"="jl"
   )
@@ -154,7 +154,7 @@ setenv("SRC_DATANAME", d)
 
 ns = solution.path(s)
 ext = file.ext(s)
-localcmd = if (s %in% c("clickhouse","h2o","juliadf")) { # custom launcher bash script, for clickhouse h2o juliadf
+localcmd = if (s %in% c("clickhouse","h2o")) { # custom launcher bash script, for clickhouse and h2o
   sprintf("exec.sh %s", t)
 } else sprintf("%s-%s.%s", t, ns, ext)
 cmd = sprintf("./%s/%s", ns, localcmd)
